@@ -33,7 +33,7 @@ export class GameMonetizeProvider implements IGameProvider {
 
   constructor() {
     this.apiUrl =
-      process.env.GAMEMONETIZE_API_URL || "https://api.gamemonetize.com/rss.php";
+      process.env.GAMEMONETIZE_API_URL || "https://gamemonetize.com/rss.php";
     this.feedAmount = parseInt(process.env.GAMEMONETIZE_FEED_AMOUNT || "100", 10);
   }
 
