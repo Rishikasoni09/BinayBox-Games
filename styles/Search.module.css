@@ -122,3 +122,20 @@
   color: var(--primary);
   font-weight: 500;
 }
+
+@media (max-width: 600px) {
+  .searchInput {
+    height: 38px;
+    padding: 0 30px 0 34px;
+    font-size: 12.5px;
+  }
+  .searchIcon {
+    left: 11px;
+    width: 16px;
+    height: 16px;
+  }
+  .clearBtn {
+    right: 10px;
+  }
+}
+

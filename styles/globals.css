@@ -99,7 +99,13 @@ img { max-width: 100%; height: auto; display: block; }
   padding: 0 24px;
 }
 @media (max-width: 768px) {
-  .container { padding: 0 16px; }
+  .container { padding: 0 12px; }
+}
+
+/* Touch optimization */
+a, button, input, select {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 /* ══════════════════════════════════════════════

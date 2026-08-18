@@ -62,14 +62,31 @@
 }
 
 @media (max-width: 600px) {
+  .inner {
+    gap: 10px;
+  }
+  .logo {
+    gap: 6px;
+  }
   .logoText {
-    font-size: 15px;
+    font-size: 14px;
+    letter-spacing: -0.2px;
   }
   .logoIcon {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
   }
   .searchWrap {
-    max-width: 220px;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 380px) {
+  .logoText {
+    font-size: 13px;
+  }
+  .searchWrap {
+    max-width: 170px;
   }
 }

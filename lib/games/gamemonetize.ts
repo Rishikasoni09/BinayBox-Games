@@ -46,6 +46,7 @@ export class GameMonetizeProvider implements IGameProvider {
     try {
       const url = new URL(this.apiUrl);
       url.searchParams.set("format", "json");
+      url.searchParams.set("type", "mobile");
       url.searchParams.set("amount", this.feedAmount.toString());
 
       if (process.env.GAMEMONETIZE_SITE_ID) {
@@ -127,10 +128,10 @@ export class GameMonetizeProvider implements IGameProvider {
           typeof raw.height === "string" ? parseInt(raw.height, 10) : raw.height,
         controls:
           raw.instructions?.trim() ||
-          "Use Keyboard (Arrow keys/WASD) or Mouse/Touch screen controls to play.",
+          "Tap, swipe, or touch the screen controls to play on mobile and desktop.",
         instructions:
           raw.instructions?.trim() ||
-          "Follow on-screen visual prompts and reach the highest score possible.",
+          "Use touch controls to complete levels and achieve the high score.",
         source: "gamemonetize",
         publishedAt: raw.date || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
