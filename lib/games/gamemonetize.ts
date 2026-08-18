@@ -6,7 +6,7 @@ import {
   PaginatedResponse,
   CategoryInfo,
 } from "./types";
-import { CATEGORIES_DATA } from "./mock-data";
+import { CATEGORIES_DATA, MOCK_GAMES } from "./mock-data";
 import { sanitizeSlug } from "@/lib/security/sanitize";
 
 interface GameMonetizeRawGame {
@@ -79,8 +79,10 @@ export class GameMonetizeProvider implements IGameProvider {
       this.lastFetchTime = now;
       return this.cachedGames;
     } catch (error) {
-      console.error("[GameMonetizeProvider] Failed to fetch feed:", error);
-      // Return previously cached games or empty array if none available
+      console.error("[GameMonetizeProvider] Failed to fetch feed, falling back to local games:", error);
+      if (this.cachedGames.length === 0) {
+        this.cachedGames = MOCK_GAMES;
+      }
       return this.cachedGames;
     }
   }
