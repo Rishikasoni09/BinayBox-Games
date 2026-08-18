@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: binaryboxgames-platform
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://binaryboxgames.shivanshji.in
+      - key: GAME_PROVIDER
+        value: mock
+      - key: GAMEMONETIZE_API_URL
+        sync: false
+      - key: GAMEMONETIZE_API_KEY
+        sync: false
+      - key: GAMEMONETIZE_SITE_ID
+        sync: false
+      - key: NEXT_PUBLIC_GA_ID
+        sync: false
+      - key: NEXT_PUBLIC_GSC_VERIFICATION
+        sync: false

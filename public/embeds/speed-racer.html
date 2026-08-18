@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Retro Speed Racer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #090d16;
+      color: #fff;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+    }
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      max-height: 600px;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+    }
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .score-val { color: #f59e0b; }
+    canvas {
+      background: #111827;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+      flex: 1;
+      width: 100%;
+    }
+    .touch-controls {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .btn {
+      background: #1f293d;
+      border: 1px solid #f59e0b;
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      border-radius: 8px;
+      text-align: center;
+      user-select: none;
+      cursor: pointer;
+    }
+    .btn:active { background: #f59e0b; color: #090d16; }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(9, 13, 22, 0.9);
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      z-index: 10;
+    }
+    .overlay h2 { font-size: 24px; color: #f59e0b; margin-bottom: 12px; }
+    .overlay p { font-size: 14px; color: #9ca3af; margin-bottom: 20px; text-align: center; max-width: 80%; }
+    .start-btn {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 9999px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+    }
+    @media (max-width: 768px) {
+      .touch-controls { display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div class="hud">
+      <div>SCORE: <span id="score" class="score-val">0</span></div>
+      <div>SPEED: <span id="speed" style="color:#10b981">120 KM/H</span></div>
+    </div>
+    <canvas id="gameCanvas" width="380" height="480"></canvas>
+    
+    <div class="touch-controls">
+      <div class="btn" id="tLeft">◀ STEER LEFT</div>
+      <div class="btn" id="tRight">STEER RIGHT ▶</div>
+    </div>
+
+    <div id="startOverlay" class="overlay">
+      <h2>RETRO SPEED RACER</h2>
+      <p>Dodge oncoming traffic on the high-speed highway! Use Left/Right Arrow Keys or tap buttons to switch lanes.</p>
+      <button class="start-btn" onclick="startRace()">IGNITION</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const speedEl = document.getElementById('speed');
+    const overlay = document.getElementById('startOverlay');
+
+    let isRunning = false;
+    let animId = null;
+    let score = 0;
+    let speed = 6;
+
+    const car = {
+      x: 170,
+      y: 380,
+      w: 40,
+      h: 68,
+      speed: 7
+    };
+
+    let enemies = [];
+    let roadStripeOffset = 0;
+    let spawnTimer = 0;
+    let keys = {};
+
+    function startRace() {
+      overlay.style.display = 'none';
+      car.x = 170;
+      enemies = [];
+      score = 0;
+      speed = 6;
+      isRunning = true;
+      if (animId) cancelAnimationFrame(animId);
+      loop();
+    }
+
+    window.addEventListener('keydown', e => { keys[e.code] = true; });
+    window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+    let steerL = false, steerR = false;
+    const btnL = document.getElementById('tLeft');
+    const btnR = document.getElementById('tRight');
+    btnL.addEventListener('pointerdown', () => steerL = true);
+    btnL.addEventListener('pointerup', () => steerL = false);
+    btnR.addEventListener('pointerdown', () => steerR = true);
+    btnR.addEventListener('pointerup', () => steerR = false);
+
+    function loop() {
+      if (!isRunning) return;
+
+      score++;
+      scoreEl.textContent = score;
+      const kmh = Math.floor(120 + score * 0.1);
+      speedEl.textContent = `${kmh} KM/H`;
+      speed = 6 + (score / 300);
+
+      // Player steer
+      if ((keys['ArrowLeft'] || keys['KeyA'] || steerL) && car.x > 50) {
+        car.x -= car.speed;
+      }
+      if ((keys['ArrowRight'] || keys['KeyD'] || steerR) && car.x < 330 - car.w) {
+        car.x += car.speed;
+      }
+
+      // Road offset
+      roadStripeOffset = (roadStripeOffset + speed) % 40;
+
+      // Spawn traffic
+      spawnTimer++;
+      if (spawnTimer > 45 - Math.min(20, Math.floor(score / 200))) {
+        const lanes = [65, 140, 215, 285];
+        const lane = lanes[Math.floor(Math.random() * lanes.length)];
+        const colors = ['#ef4444', '#06b6d4', '#8b5cf6', '#10b981'];
+        enemies.push({
+          x: lane,
+          y: -80,
+          w: 38,
+          h: 65,
+          speed: speed * 0.6 + Math.random() * 2,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+        spawnTimer = 0;
+      }
+
+      // Update traffic
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.y += e.speed;
+
+        // Collision detection
+        if (
+          car.x < e.x + e.w - 4 &&
+          car.x + car.w > e.x + 4 &&
+          car.y < e.y + e.h - 4 &&
+          car.y + car.h > e.y + 4
+        ) {
+          gameOver();
+          return;
+        }
+
+        if (e.y > 520) enemies.splice(i, 1);
+      }
+
+      // Render
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, 380, 480);
+
+      // Road asphalt
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(40, 0, 300, 480);
+
+      // Road borders
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(38, 0, 4, 480);
+      ctx.fillRect(338, 0, 4, 480);
+
+      // Lane dividers
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.setLineDash([20, 20]);
+      ctx.lineDashOffset = -roadStripeOffset;
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(140, 0); ctx.lineTo(140, 480);
+      ctx.moveTo(240, 0); ctx.lineTo(240, 480);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw Enemies
+      enemies.forEach(e => {
+        ctx.fillStyle = e.color;
+        ctx.shadowColor = e.color;
+        ctx.shadowBlur = 8;
+        ctx.fillRect(e.x, e.y, e.w, e.h);
+        // Windshield
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(e.x + 4, e.y + 14, e.w - 8, 12);
+        // Taillights
+        ctx.fillStyle = '#f43f5e';
+        ctx.fillRect(e.x + 4, e.y + e.h - 4, 8, 3);
+        ctx.fillRect(e.x + e.w - 12, e.y + e.h - 4, 8, 3);
+      });
+
+      // Draw Player Car
+      ctx.fillStyle = '#f59e0b';
+      ctx.shadowColor = '#f59e0b';
+      ctx.shadowBlur = 15;
+      ctx.fillRect(car.x, car.y, car.w, car.h);
+      // Windshield
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(car.x + 5, car.y + 16, car.w - 10, 14);
+      // Headlights
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(car.x + 4, car.y + 2, 8, 4);
+      ctx.fillRect(car.x + car.w - 12, car.y + 2, 8, 4);
+
+      ctx.shadowBlur = 0;
+      animId = requestAnimationFrame(loop);
+    }
+
+    function gameOver() {
+      isRunning = false;
+      overlay.querySelector('h2').textContent = 'TOTAL WRECK!';
+      overlay.querySelector('p').innerHTML = `Score: <b style="color:#f59e0b">${score}</b><br>Hit ignition to hit the track again!`;
+      overlay.querySelector('.start-btn').textContent = 'TRY AGAIN';
+      overlay.style.display = 'flex';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+/* Search bar — light theme */
+
+.searchContainer {
+  position: relative;
+  width: 100%;
+}
+
+.searchForm {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.searchInput {
+  width: 100%;
+  height: 46px;
+  background: #ffffff;
+  border: 1.5px solid rgba(108, 92, 231, 0.18);
+  border-radius: 99px;
+  padding: 0 48px 0 46px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 6px rgba(108, 92, 231, 0.06);
+}
+
+.searchInput:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.12);
+  background: #ffffff;
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 15px;
+  color: var(--text-muted);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.clearBtn {
+  position: absolute;
+  right: 14px;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.clearBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+/* Dropdown */
+.dropdownResults {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid rgba(108, 92, 231, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(108, 92, 231, 0.14);
+  overflow: hidden;
+  z-index: 200;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(108, 92, 231, 0.06);
+  transition: background 0.12s ease;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.dropdownItem:last-child { border-bottom: none; }
+.dropdownItem:hover { background: rgba(108, 92, 231, 0.05); }
+
+.dropdownThumb {
+  width: 44px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--bg-elevated);
+  flex-shrink: 0;
+}
+
+.dropdownInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.dropdownTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+
+.dropdownCategory {
+  font-size: 11.5px;
+  color: var(--primary);
+  font-weight: 500;
+}

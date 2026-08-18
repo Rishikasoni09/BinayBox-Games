@@ -1,0 +1,134 @@
+/* Footer — light purple theme */
+
+.footer {
+  margin-top: 64px;
+  background: #ffffff;
+  border-top: 1px solid rgba(108, 92, 231, 0.1);
+  padding: 56px 0 28px;
+  color: var(--text-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.brandLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.brandLogoIcon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.brandLogoAccent { color: var(--primary); }
+
+.brandDesc {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  max-width: 320px;
+}
+
+.publisherNote {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  background: rgba(108, 92, 231, 0.04);
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(108, 92, 231, 0.1);
+  line-height: 1.55;
+}
+
+.publisherNoteHead {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  color: var(--accent-emerald);
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.colTitle {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.linkList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.linkList a {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+  display: inline-block;
+}
+
+.linkList a:hover {
+  color: var(--primary);
+}
+
+.bottomBar {
+  border-top: 1px solid rgba(108, 92, 231, 0.08);
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.domainLink { color: var(--primary); font-weight: 600; }
+
+.bottomLinks {
+  display: flex;
+  gap: 20px;
+}
+.bottomLinks a { color: var(--text-muted); font-size: 12.5px; }
+.bottomLinks a:hover { color: var(--primary); }
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .brandCol { grid-column: span 2; }
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+  .brandCol { grid-column: span 1; }
+  .bottomBar { flex-direction: column; text-align: center; }
+}
